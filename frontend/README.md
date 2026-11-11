@@ -20,6 +20,10 @@ cp .env.example .env.local
 npm run dev
 ```
 
+Dev и production используют Webpack. Tailwind и PostCSS закреплены согласованно
+на 4.2.2; lockfile исключает проблемную ESM-only цепочку magic-string. Для
+очистки старого кэша после обновления остановите Next.js и выполните `npm run clean`.
+
 В облачной среде с недоступным домашним npm cache используйте
 `npm ci --cache /workspace/.npm-cache`. Frontend: порт 3000; backend: 8000.
 
@@ -62,3 +66,10 @@ CHROMIUM_PATH. Для другого frontend-адреса задайте WEB_UR
 
 Если появляется require() of ES Module magic-string, npm не видит package.json
 или отсутствует Docker — [инструкция устранения ошибок Windows](../docs/local-setup.md#если-frontend-не-запускается-в-windows).
+
+
+В dev разрешены только локальные адреса localhost и 127.0.0.1 для ресурсов
+Next.js. Не расширяйте allowedDevOrigins на произвольные сайты.
+Формы входа используют POST и остаются заблокированными до готовности
+клиентского кода; отдельный браузерный тест проверяет отсутствие пароля в URL
+при отключённом JavaScript.

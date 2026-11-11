@@ -151,7 +151,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const router = useRouter();
-  const { refresh } = useSession();
+  const { refresh, loading } = useSession();
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
@@ -209,7 +209,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
               : "Ваш гардероб и любимые образы уже ждут."}
           </p>
           <Notice>{error}</Notice>
-          <form onSubmit={submit}>
+          <form method="post" onSubmit={submit}>
             {register && (
               <label>
                 Как вас зовут
@@ -259,7 +259,7 @@ export function AuthPage({ register = false }: { register?: boolean }) {
                 распространённых слов.
               </p>
             )}
-            <button className="button full" disabled={busy}>
+            <button className="button full" disabled={busy || loading}>
               {busy ? "Подождите…" : register ? "Создать аккаунт" : "Войти"}{" "}
               <ArrowUpRight size={18} />
             </button>

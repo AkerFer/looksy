@@ -245,3 +245,28 @@ test("публичная страница адаптивна, защищённа
   await page.goto("/wardrobe");
   await expect(page).toHaveURL(/\/login$/);
 });
+
+test("формы входа не отправляют пароль в URL до загрузки JavaScript", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  try {
+    const page = await context.newPage();
+    for (const route of ["/register", "/login"]) {
+      await page.goto(new URL(route, baseURL).href);
+      await page.locator('[name="username"]').fill("nojs-test");
+      await page.locator('[name="password"]').fill("Synthetic-NoJS!882");
+      await expect(page.locator("form")).toHaveAttribute("method", "post");
+      await expect(
+        page.getByRole("button", {
+          name: route === "/register" ? "Создать аккаунт" : "Войти",
+          exact: true,
+        }),
+      ).toBeDisabled();
+      await page.locator('[name="password"]').press("Enter");
+      expect(new URL(page.url()).search).toBe("");
+    }
+  } finally {
+    await context.close();
+  }
+});
