@@ -37,6 +37,13 @@ Next.js для мобильного приложения запускать не
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,192.168.1.5
 ```
 
+Адрес `192.168.100.3` уже добавлен в
+[`backend/config/development_hosts.py`](../backend/config/development_hosts.py).
+При `DJANGO_DEBUG=true` он разрешается дополнительно к адресам из существующего
+`.env`: после `git pull` достаточно перезапустить Django. При другом IPv4
+добавьте свой адрес в `DJANGO_ALLOWED_HOSTS`, как в примере выше. При
+`DJANGO_DEBUG=false` этот конфиг разработки не применяется.
+
 Не перезаписывайте остальные настройки `.env`. Если используется PostgreSQL
 из Docker Compose проекта, сначала откройте Docker Desktop и дождитесь запуска
 Docker Engine. Затем выполните в PowerShell:

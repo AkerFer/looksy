@@ -8,6 +8,9 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
 if len(SECRET_KEY) < 32:
     raise RuntimeError('Set DJANGO_SECRET_KEY to at least 32 random characters in .env')
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',')
+if DEBUG:
+    from .development_hosts import ALLOWED_HOSTS as DEVELOPMENT_ALLOWED_HOSTS
+    ALLOWED_HOSTS = list(dict.fromkeys([*ALLOWED_HOSTS, *DEVELOPMENT_ALLOWED_HOSTS]))
 INSTALLED_APPS = ['django.contrib.admin', 'django.contrib.messages', 'django.contrib.staticfiles', 'rest_framework_simplejwt.token_blacklist', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'rest_framework', 'wardrobe']
 MIDDLEWARE = ['django.middleware.security.SecurityMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.common.CommonMiddleware', 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware']
 ROOT_URLCONF = 'config.urls'
