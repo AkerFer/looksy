@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+*.sqlite3
+backend/private_media/
+.coverage
+backend/staticfiles/
+backend/.models/
+frontend/node_modules/
+frontend/.next/
+frontend/test-results/
+frontend/playwright-report/
+frontend/tsconfig.tsbuildinfo
+frontend/.env.local
+.env.*
+!.env.example
