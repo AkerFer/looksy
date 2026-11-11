@@ -6,7 +6,10 @@ Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Lucide.
 
 ## Запуск
 
+Нужен Node.js **24 LTS**; `node --version` должен показывать v24.x.x.
 Проверено на Node 24.22.1 (версия в .nvmrc) и Python 3.12.
+После обновления Node.js полностью перезапустите VS Code. Проект проверяет
+версию перед запуском и при установке зависимостей.
 Сначала запустите backend и PostgreSQL по корневому README.
 
 ```bash
@@ -56,3 +59,6 @@ CHROMIUM_PATH. Для другого frontend-адреса задайте WEB_UR
 не публикуйте traces настоящих аккаунтов.
 
 См. [полное описание этапа 6](../docs/stage-6.md).
+
+Если появляется require() of ES Module magic-string, npm не видит package.json
+или отсутствует Docker — [инструкция устранения ошибок Windows](../docs/local-setup.md#если-frontend-не-запускается-в-windows).

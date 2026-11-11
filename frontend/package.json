@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0",
-    "build": "next build --webpack",
-    "start": "next start --hostname 0.0.0.0",
+    "dev": "node scripts/check-node.cjs && next dev --hostname 0.0.0.0",
+    "build": "node scripts/check-node.cjs && next build --webpack",
+    "start": "node scripts/check-node.cjs && next start --hostname 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test"
   },
@@ -25,5 +25,8 @@
     "prettier": "3.10.0",
     "tailwindcss": "4.3.5",
     "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": ">=24 <25"
   }
 }

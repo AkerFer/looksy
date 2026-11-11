@@ -4,7 +4,9 @@
 Docker Desktop с Linux-контейнерами. PostgreSQL отдельно устанавливать не нужно:
 его запускает Compose. В Windows команды ниже рассчитаны на PowerShell.
 Активация virtualenv не требуется, поэтому политику выполнения PowerShell менять
-не нужно.
+не нужно. Перед установкой frontend выполните `node --version`: нужна версия
+`v24.x.x`. После установки/обновления Node.js полностью закройте VS Code и
+откройте его заново, чтобы терминал получил новый PATH.
 
 ## 1. Получить проект
 
@@ -61,13 +63,15 @@ POSTGRES_PASSWORD, не выводит их и не перезаписывает
 
 ## 3. Frontend — второй терминал VS Code
 
-Из корня проекта:
+Из корня проекта в Windows PowerShell:
 
-```bash
+```powershell
 cd frontend
-npm ci
-npm run dev
+npm.cmd ci
+npm.cmd run dev
 ```
+
+В Linux/macOS: `cd frontend`, затем `npm ci` и `npm run dev`.
 
 Откройте **http://localhost:3000**. Backend работает на **http://127.0.0.1:8000**,
 проверка процесса — `/health/`. Зарегистрируйте свой аккаунт: готового логина и
@@ -146,3 +150,60 @@ Open-Meteo требует доступа к api.open-meteo.com и geocoding-api.
 
 Для проверки frontend из его папки: `npm run typecheck`, `npm run build`.
 Настройка браузерных тестов и Chromium: [frontend/README.md](../frontend/README.md).
+
+## Если frontend не запускается в Windows
+
+### Папка frontend не найдена / npm не видит package.json
+
+Npm нужно запускать внутри папки frontend, а не из родительской папки.
+Если репозиторий клонирован внутрь уже существующей папки looksy, путь может
+содержать looksy дважды. Для такого расположения:
+
+```powershell
+cd C:\Users\user\Documents\looksy\looksy\frontend
+Test-Path .\package.json
+```
+
+Ожидается True. Если путь к вашему клону другой, используйте его.
+
+### require() of ES Module magic-string / ArrayBuffer.prototype.detached
+
+Этот стек наблюдался при загрузке Tailwind/React с неподходящим Node.js.
+Версия npm не равна версии Node.js; обновление одного npm проблему не решает.
+Проект рассчитан на Node.js 24 LTS, закреплённую в .nvmrc. Версия проверяется
+через engines/engine-strict при установке и перед dev/build/start.
+
+1. Остановите frontend (Ctrl+C).
+2. Установите Node.js 24 LTS с https://nodejs.org/en/download.
+3. Полностью перезапустите VS Code. Если в терминале активировано стороннее
+   окружение, убедитесь, что оно не подставляет старый Node.js раньше в PATH.
+4. В новом терминале проверьте `node --version` (v24.x.x). `where.exe node`
+   покажет найденные установки, если версия осталась старой.
+5. Обновите исходники из корня своего клона и запустите frontend:
+
+```powershell
+cd C:\Users\user\Documents\looksy\looksy
+git pull --ff-only origin main
+cd frontend
+node --version
+npm.cmd ci
+npm.cmd run dev
+```
+
+npm ci переустанавливает зависимости по сохранённому package-lock.json.
+Проверка выполнена в Linux на Node 24.22.1; на Windows после обновления нужно
+повторить запуск. Сервер Django должен продолжать работать в отдельном терминале.
+
+### Нет Docker Desktop: быстрый локальный запуск с SQLite
+
+После установки Python-зависимостей и создания .env из корня проекта:
+
+```powershell
+$env:DB_ENGINE="sqlite"
+.\.venv\Scripts\python.exe backend\manage.py migrate
+.\.venv\Scripts\python.exe backend\manage.py runserver 127.0.0.1:8000
+```
+
+Переменная действует только в этом терминале. SQLite — режим локальной
+разработки; PostgreSQL остаётся основным вариантом. Переключение БД не переносит
+существующие данные автоматически.
