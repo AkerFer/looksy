@@ -37,12 +37,34 @@ Next.js для мобильного приложения запускать не
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,192.168.1.5
 ```
 
-Не перезаписывайте остальные настройки `.env`. Запустите в PowerShell:
+Не перезаписывайте остальные настройки `.env`. Если используется PostgreSQL
+из Docker Compose проекта, сначала откройте Docker Desktop и дождитесь запуска
+Docker Engine. Затем выполните в PowerShell:
 
 ```powershell
+docker compose up -d --wait db
 .\.venv\Scripts\python.exe backend\manage.py migrate
 .\.venv\Scripts\python.exe backend\manage.py runserver 0.0.0.0:8000
 ```
+
+Ошибка `psycopg.errors.ConnectionTimeout` / `connection timeout expired` означает,
+что Django не смог подключиться к PostgreSQL. Для БД из Compose проекта
+`POSTGRES_HOST` должен быть `127.0.0.1`, а `POSTGRES_PORT` — опубликованным портом
+(по умолчанию `5432`). IP Wi-Fi компьютера указывайте в приложении и
+`DJANGO_ALLOWED_HOSTS`, он не заменяет адрес PostgreSQL.
+
+Если Docker не установлен и нужен локальный запуск с SQLite, в том же терминале:
+
+```powershell
+$env:DB_ENGINE="sqlite"
+.\.venv\Scripts\python.exe backend\manage.py migrate
+.\.venv\Scripts\python.exe backend\manage.py runserver 0.0.0.0:8000
+```
+
+Эта переменная действует только в текущем терминале. Для постоянного выбора
+замените `DB_ENGINE=postgresql` на `DB_ENGINE=sqlite` в корневом `.env`.
+SQLite использует отдельную базу: аккаунты и вещи из PostgreSQL автоматически
+не переносятся. Существующие данные PostgreSQL при переключении не удаляются.
 
 Первичная установка Python, зависимостей и БД описана в
 [общей инструкции](../docs/local-setup.md). Разрешите Python входящие соединения
