@@ -16,3 +16,5 @@ SHA-256: `bdf8eea86d288bc7e40ab7865bd506529b96627924c9c785c9590ce5415db46d`.
 Signature verified with Android apksigner (v2). Unit/widget tests: 7 passed;
 Dart mobile API client tested against actual Django. Physical phone/camera,
 gallery and iOS have not been tested in the cloud environment.
+
+[Download ZIP with APK](https://github.com/AkerFer/looksy/raw/refs/heads/apk/android-0.1.0/Looksy-0.1.0.zip). Extract the archive and open Looksy.apk on your Android phone.
